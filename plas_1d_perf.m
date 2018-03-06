@@ -15,8 +15,11 @@ time = linspace(0, 10, size(eps_arr,2));
 sig_y = 5.0e5;
 sig_1 = 0;
 eps_p_1 = 0;
+sig_arr(1) = sig_1;
+eps_p_arr(1) = eps_p_1;
+eps_e_arr(1) = eps_arr(1) - eps_p_1;
 
-for t = 1 : size(eps_arr,2)
+for t = 2 : size(eps_arr,2)
 
   sig_trial   = sig_1 + E*d_eps;
   eps_p_trial = eps_p_1;
@@ -48,3 +51,7 @@ plot(time, eps_p_arr, '*-r', "linewidth", 2,...
 
 figure();
 plot(time, sig_arr,'*-b',"linewidth",2); print -djpg sig.jpg 
+
+
+data = [time',eps_arr',eps_e_arr',eps_p_arr',sig_arr'];
+save output.dat -ascii data
