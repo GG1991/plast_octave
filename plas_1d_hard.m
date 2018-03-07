@@ -1,12 +1,13 @@
 % Plasticity for 1D model
 % supositions:
-% * perfect plasticity f = |s| - s_y 
+% * plasticity with hardening f = |s| - (s_y + K*a)
 
 E = 1.0e9;
+K = 1.0e9;
 d_eps = 0.0001;
 
 eps_f = 0.001;
-eps_arr   = [[0: d_eps : eps_f],[eps_f : -d_eps : -2*eps_f], [-2*eps_f : d_eps : 0]]
+eps_arr   = [[0: d_eps : eps_f],[eps_f : -d_eps : -2*eps_f], [-2*eps_f : d_eps : 2*eps_f]];
 eps_p_arr = zeros(size(eps));
 eps_e_arr = zeros(size(eps));
 sig_arr   = zeros(size(eps));
@@ -18,13 +19,14 @@ eps_p_1 = 0;
 sig_arr(1) = sig_1;
 eps_p_arr(1) = eps_p_1;
 eps_e_arr(1) = eps_arr(1) - eps_p_1;
+a = 0;
 
 for t = 2 : size(eps_arr,2)
 
   d_eps = eps_arr(t) - eps_arr(t-1);
   sig_trial   = sig_1 + E*d_eps;
   eps_p_trial = eps_p_1;
-  f_trial = abs(sig_trial) - sig_y;
+  f_trial = abs(sig_trial) - (sig_y + K*a);
 
   if (f_trial < 0)
     % elastic state
@@ -32,9 +34,10 @@ for t = 2 : size(eps_arr,2)
     eps_p_2 = eps_p_trial;
   else
     % return mapping
-    d_gamma = f_trial/E;
+    d_gamma = f_trial/(E + K);
     sig_2   = sig_trial   - d_gamma*E*sign(sig_trial);
     eps_p_2 = eps_p_trial + d_gamma*sign(sig_trial);
+    a += d_gamma;
   end
   sig_1   = sig_2;
   eps_p_1 = eps_p_2;
