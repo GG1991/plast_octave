@@ -23,7 +23,8 @@ s_2     = zeros(3,1);
 P = (1/3)*[2 -1 0 ; -1 2 0 ; 0 0 6];
 E = 1.0e9;
 nu = 0.3; 
-C = (E/(1-nu**2))*[1 nu 0; nu 1 0; 0 0 (1-nu)/2];
+G = E/(2 + 2*nu);
+D0 = (E/(1-nu**2))*[1 nu 0; nu 1 0; 0 0 (1-nu)/2];
 
 time = linspace(0, 10, size(eps_arr,2));
 
@@ -33,17 +34,23 @@ for t = 2 : size(eps_arr,2)
 
  d_eps   = eps_arr(:,t) - eps_arr(:,t-1);
  eps_e_t = eps_e_1 + d_eps;
- sig_t   = C * eps_e_t;
+ sig_t   = D0 * eps_e_t;
  eps_p_t = eps_p_1 ;
  f_2_t   = (1/2) * sig_t' * P * sig_t - (1/3) * sig_y**2;
 
  if (f_2_t <= 0)
-   printf("is linear\n")
+   printf("is linear\n");
    eps_e_2 = eps_e_t;
    sig_2   = sig_t;
    f_2     = f_2_t;
  else
-   printf("is NOT linear\n")
+   printf("is NOT linear\n");
+   A = (1/6)*(sig_t(1) + sig_t(2))**2;
+   B = (1/2)*(sig_t(1) - sig_t(2))**2;
+   C = 2 * sig_t(3)**2;
+   dlambda = 0.0;
+   a = (1/3) * dlambda * E / (1-nu);
+   b = 2*G;
  endif
 
  eps_e_1 = eps_e_2;
