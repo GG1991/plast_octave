@@ -56,6 +56,4 @@ function [sig_2, eps_e_2, eps_p_2] = func_2d_plain_stress(eps_2, eps_e_1, eps_p_
 
  endif
 
-end
-
 endfunction
