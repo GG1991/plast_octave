@@ -28,7 +28,7 @@ D0 = (E/(1-nu**2))*[1 nu 0; nu 1 0; 0 0 (1-nu)/2];
 
 time = linspace(0, 10, size(eps_arr,2));
 
-sig_y = 5.0e5;
+sig_y = 5.0e11;
 
 for t = 2 : size(eps_arr,2)
 
@@ -36,7 +36,8 @@ for t = 2 : size(eps_arr,2)
  eps_e_t = eps_e_1 + d_eps;
  sig_t   = D0 * eps_e_t;
  eps_p_t = eps_p_1 ;
- f_2_t   = (1/2) * sig_t' * P * sig_t - (1/3) * sig_y**2;
+ S2      = sig_y; % perfect plasticity
+ f_2_t   = (1/2) * sig_t' * P * sig_t - (1/3) * S2;
 
  if (f_2_t <= 0)
    printf("is linear\n");
@@ -48,9 +49,25 @@ for t = 2 : size(eps_arr,2)
    A = (1/6)*(sig_t(1) + sig_t(2))**2;
    B = (1/2)*(sig_t(1) - sig_t(2))**2;
    C = 2 * sig_t(3)**2;
-   dlambda = 0.0;
-   a = (1/3) * dlambda * E / (1-nu);
-   b = 2*G;
+   b    = 2*G;
+
+   % begin newton-raphson loop
+   dl   = 0.0;
+   its  = 0;
+   while (its < 20) 
+     a    = (1/3) * dl * E / (1-nu);
+     S2   = sig_y; % perfect plasticity
+     phi2 = A/((1+a*dl)**2) + B/((1+b*dl)**2) + C/((1+b*dl)**2);
+     q    = (1/2)*phi2 - (1/3)*S2;
+     printf("q = %f\n",q);
+     if (q < 0.001) break; endif;
+
+     dq   = -(1/2)*(2*A*a/((1+a*dl)**3) + 2*B*b/((1+b*dl)**3) + 2*C*b/((1+b*dl)**3));
+     dl  -= q/dq;
+
+     its += 1;
+   endwhile
+
  endif
 
  eps_e_1 = eps_e_2;
