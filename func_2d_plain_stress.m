@@ -9,7 +9,7 @@ function [sig_2, eps_e_2, eps_p_2] = func_2d_plain_stress(eps_2, eps_e_1, eps_p_
  nu      = 0.3; 
  G       = E/(2 + 2*nu);
  D0      = (E/(1-nu**2)) * [1 nu 0; nu 1 0; 0 0 (1-nu)/2];
- sig_y   = 5.0e11;
+ sig_y   = 2.0e11;
 
  eps_1   = eps_e_1 + eps_p_1;
  d_eps   = eps_2 - eps_1;
@@ -42,7 +42,7 @@ function [sig_2, eps_e_2, eps_p_2] = func_2d_plain_stress(eps_2, eps_e_1, eps_p_
      S2   = sig_y; % perfect plasticity
      phi2 = A/((1+a*dl)**2) + B/((1+b*dl)**2) + C/((1+b*dl)**2);
      q    = (1/2)*phi2 - (1/3)*S2; printf("q = %f\n",q);
-     if (q < 0.001) break; endif;
+     if (abs(q) < 0.00001) break; endif;
 
      dq   = -(1/2)*(2*A*a/((1+a*dl)**3) + 2*B*b/((1+b*dl)**3) + 2*C*b/((1+b*dl)**3));
      dl  -= q/dq;
@@ -51,7 +51,7 @@ function [sig_2, eps_e_2, eps_p_2] = func_2d_plain_stress(eps_2, eps_e_1, eps_p_
    endwhile
 
    sig_2   = inv(inv(D0) + dl*P) * inv(D0) * sig_t;
-   eps_p_2 = dl * P * sig_2;
+   eps_p_2 = eps_p_1 + dl * P * sig_2;
    eps_e_2 = eps_2 - eps_p_2;
 
  endif
