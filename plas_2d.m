@@ -1,6 +1,6 @@
 % Test plain stress plasticity 2D model
 
-d_eps = 0.00001;
+d_eps = 0.000001;
 eps_f = 0.0008;
 eps_arr = [[0: d_eps : eps_f]; 0*[0: d_eps : eps_f] ; 0*[0: d_eps : eps_f]];
 
@@ -32,14 +32,14 @@ for t = 2 : size(eps_arr,2)
 
 end
 
-figure();
-plot(time, eps_p_arr_esc, '*-r', "linewidth", 2,...
-     time, eps_e_arr_esc, '*-g', "linewidth", 2,...
-     time, eps_arr_esc  , '*-b', "linewidth", 2); print -djpg eps.jpg 
+%figure();
+%plot(time, eps_p_arr_esc, '*-r', "linewidth", 2,...
+%     time, eps_e_arr_esc, '*-g', "linewidth", 2,...
+%     time, eps_arr_esc  , '*-b', "linewidth", 2); print -djpg eps.jpg 
 %
-figure();
-plot(eps_arr_esc, sig_arr_esc,'*-b',"linewidth",2); print -djpg sig.jpg 
+%figure();
+%plot(eps_arr_esc, sig_arr_esc,'*-b',"linewidth",2); print -djpg sig.jpg 
 %
 %
-data = [eps_arr_esc, sig_arr_esc];
+data = [eps_arr_esc', sig_arr_esc'];
 save output.dat -ascii data
