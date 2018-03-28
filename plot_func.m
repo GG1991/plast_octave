@@ -5,11 +5,11 @@ nu      = 0.3;
 G       = E/(2 + 2*nu);
 D0      = (E/(1-nu**2)) * [1 nu 0; nu 1 0; 0 0 (1-nu)/2];
 sig_y   = 2.0e11;
-factor  = 1.0e8
+factor  = 1.0e8;
 
 eps_e_1 = [0 0 0]';
 eps_p_1 = [0 0 0]';
-eps_2   = [0.005 0 0]';
+eps_2   = [0.0005 0 0]';
 eps_1   = eps_e_1 + eps_p_1;
 d_eps   = eps_2 - eps_1;
 
@@ -35,7 +35,7 @@ q  = zeros(size(dl));
 for i = 1:size(dl,2);
   a    = (1/3) * dl(i) * E / (1-nu);
   S2   = sig_y; % perfect plasticity
-  phi2 = A/((1+a*dl(i))**2) + B/((1+b*dl(i))**2) + C/((1+b*dl(i))**2);
+  phi2 = A/((1+a*dl(i))^2) + B/((1+b*dl(i))^2) + C/((1+b*dl(i))^2);
   q(i) = ((1/2)*phi2 - (1/3)*S2)/factor;
   if (abs(q) < 0.00001) break; endif;
   dq   = -((A*a/((1+a*dl(i))^3) + B*b/((1+b*dl(i))^3) + C*b/((1+b*dl(i))^3)))/factor;
@@ -43,10 +43,10 @@ endfor
 
 %-----
 
-max_its = 8;
+max_its = 35;
 q_tri = zeros(1,max_its);
 dl_tri = zeros(1,max_its);
-dl_tri(1) = 0.0001;
+dl_tri(1) = 0.0;
 a    = (1/3) * dl_tri(1) * E / (1-nu);
 S2   = sig_y; % perfect plasticity
 phi2 = A/((1+a*dl_tri(1))^2) + B/((1+b*dl_tri(1))^2) + C/((1+b*dl_tri(1))^2);
