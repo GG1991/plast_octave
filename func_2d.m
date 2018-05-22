@@ -15,13 +15,12 @@ function [sig_2, eps_e_2, eps_p_2, alpha_2] = func_2d(eps_2, eps_e_1, eps_p_1, a
  eps_1   = eps_e_1 + eps_p_1;
  d_eps   = eps_2 - eps_1;
 
- % trial values lets see what happen
+ % trial values
  eps_e_t = eps_e_1 + d_eps;
  sig_t   = D0 * eps_e_t;
  eps_p_t = eps_p_1;
  alpha_t = alpha_1;
- 
- S2      = sig_y + K *alpha_1; % plasticity with hardening
+ S2      = sig_y + K * alpha_1;
  f_2_t   = (1/2) * sig_t' * P * sig_t - (1/3) * S2;
 
  if (f_2_t <= 0)
@@ -49,7 +48,7 @@ function [sig_2, eps_e_2, eps_p_2, alpha_2] = func_2d(eps_2, eps_e_1, eps_p_1, a
      phi2 = A/((1+a*dl)^2) + B/((1+b*dl)^2) + C/((1+b*dl)^2);
      q    = (1/2)*phi2 - (1/3)*S2; printf("q = %f\n",q);
      if (abs(q) < 1) break; endif;
-     dq   = -(A*a/((1+a*dl)^3) + B*b/((1+b*dl)^3) + C*b/((1+b*dl)^3)) - (K/3);
+     dq   = -(A*a/((1+a*dl)^3) + B*b/((1+b*dl)^3) + C*b/((1+b*dl)^3)) - K/3;
      dl  -= q/dq;
      its += 1;
    endwhile
